@@ -1,0 +1,81 @@
+package com.Akorbi.Testcases;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
+
+import org.testng.annotations.Test;
+
+import com.Akorbi.PageObjects.RateGroups;
+
+import reusablecode.Toastmessagevalidation;
+
+public class AK_RG_TC01 extends BaseClass {
+
+	Toastmessagevalidation tm = new Toastmessagevalidation();
+
+	@Test
+	public void rategroups() throws InterruptedException {
+
+		driver.get(baseurl);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		logger.info("URL Opened successfully");
+
+		// enter rate group name in input field and cancel.
+		RateGroups rg = new RateGroups(driver);
+		String input = "AutotestPD";
+		rg.clicknewrg();
+//		rg.clickrgsave();
+		
+
+		rg.inputrgname(input);
+		rg.clickcancel();
+		Thread.sleep(1000);
+		rg.inputsearch(input);
+//		List <WebElement> = 
+		logger.info("Clicked new rategroup >> entered text and clicked cancel button");
+		
+	
+		// Create new rate group with valid input.
+		rg.clicknewrg();
+		rg.inputrgname(input);
+		rg.clickrgsave();
+		logger.info("A new rate group is created");
+
+		// RG Created Toast message validation
+
+		
+		String RgcToast = rg.toastmesg();
+		tm.RGcreatedToast(RgcToast);
+		logger.info("Created Toast message is validated");
+
+//		tm.RGcreatedToast();
+//		Thread.sleep(6000);
+
+		// Search with created rate group and edit functionality.
+
+		rg.clickrg();
+		rg.inputsearch(input);
+		Thread.sleep(1000);
+
+		rg.clickeditbtn();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+		LocalDateTime now = LocalDateTime.now();
+		String Editedtext = (dtf.format(now));
+		rg.inputrgname(Editedtext);
+		rg.clickrgsave();
+		logger.info("Edited Rategroup successfully");
+//		 String RgcToast1= 
+		tm.RGcreatedToast(rg.toastmesg());
+		logger.info("Edited Toast message validated");
+		
+//		Thread.sleep(6000);
+		rg.inputsearch(Editedtext);
+		
+		logger.info("Searched with the edited text");
+				
+
+	}
+
+}
